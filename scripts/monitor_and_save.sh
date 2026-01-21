@@ -115,9 +115,9 @@ if [[ $TOKENS -gt 900000 ]]; then
     if [[ ! -f "$WARNING_SENT_FILE" ]] || [[ $(cat "$WARNING_SENT_FILE") != "900k" ]]; then
         # Send urgent warning via Telegram
         BOT_TOKEN=$(jq -r '.telegram.token' /root/.clawdbot/clawdbot.json 2>/dev/null)
-        if [[ -n "$BOT_TOKEN" ]]; then
+        if [[ -n "$BOT_TOKEN" && -n "$CHAT_ID" ]]; then
             curl -s -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-                -d "chat_id=440263016" \
+                -d "chat_id=${CHAT_ID}" \
                 -d "text=🚨 URGENT: Context at ${TOKENS}k/1M (90%+) - Run /new NOW" > /dev/null
         fi
         echo "900k" > "$WARNING_SENT_FILE"
@@ -125,9 +125,9 @@ if [[ $TOKENS -gt 900000 ]]; then
 elif [[ $TOKENS -gt 800000 ]]; then
     if [[ ! -f "$WARNING_SENT_FILE" ]] || [[ $(cat "$WARNING_SENT_FILE") != "800k" ]]; then
         BOT_TOKEN=$(jq -r '.telegram.token' /root/.clawdbot/clawdbot.json 2>/dev/null)
-        if [[ -n "$BOT_TOKEN" ]]; then
+        if [[ -n "$BOT_TOKEN" && -n "$CHAT_ID" ]]; then
             curl -s -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-                -d "chat_id=440263016" \
+                -d "chat_id=${CHAT_ID}" \
                 -d "text=⚠️ TOKEN WARNING: Context at ${TOKENS}k/1M (80%+) - Consider /new soon" > /dev/null
         fi
         echo "800k" > "$WARNING_SENT_FILE"
